@@ -1,0 +1,34 @@
+name: 部署至 GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: 安装依赖
+        run: npm install --legacy-peer-deps
+
+      - name: 构建静态资源
+        run: node node_modules/@vue/cli-service/bin/vue-cli-service.js build
+
+      - name: 部署至 GitHub Pages (gh-pages 分支)
+        uses: PeaceIris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist

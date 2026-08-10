@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  # 后端：Subconverter 转换引擎
+  subconverter:
+    image: tindy2013/subconverter:latest
+    container_name: subconverter
+    restart: always
+    ports:
+      - "25500:25500"
+    environment:
+      - LISTEN_PORT=25500
+    volumes:
+      - ./subconverter_config/pref.ini:/base/pref.ini:ro
+      - ./subconverter_config/rules:/base/rules:ro
+
+  # 前端：Sub-web 图形界面
+  sub-web:
+    image: careywang/sub-web:latest
+    container_name: sub-web
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      - BACKEND_URL=http://127.0.0.1:25500
+    depends_on:
+      - subconverter

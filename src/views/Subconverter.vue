@@ -478,10 +478,12 @@ export default {
           "sub.cm": "https://sub.cm/short",
         },
         customBackend: {
+          "本地自建后端【127.0.0.1:25500】": "http://127.0.0.1:25500/sub",
           "肥羊增强型后端【vless reality+anytls】": "https://api.v1.mk",
           "肥羊备用后端【vless reality+anytls】": "https://url.v1.mk",
         },
         backendOptions: [
+          {value: "http://127.0.0.1:25500/sub"},
           {value: "https://api.v1.mk"},
           {value: "https://url.v1.mk"},
         ],
