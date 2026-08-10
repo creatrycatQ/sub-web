@@ -5,12 +5,22 @@ on:
     branches:
       - main
       - master
+  workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   build-and-deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: 检出代码
@@ -27,8 +37,11 @@ jobs:
       - name: 构建静态资源
         run: node node_modules/@vue/cli-service/bin/vue-cli-service.js build
 
-      - name: 部署至 GitHub Pages (gh-pages 分支)
-        uses: PeaceIris/actions-gh-pages@v3
+      - name: 打包 GitHub Pages 构件
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          path: ./dist
+
+      - name: 部署至 GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
